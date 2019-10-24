@@ -88,7 +88,7 @@ public class UserInterface implements Observer{
 		textArea = new JTextArea();
 		scrollPane.setViewportView(textArea);
 		
-		JButton btnRun = new JButton("Run");
+		JButton btnRun = new JButton("Execute");
 		btnRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				boolean correctInput = true;
@@ -137,7 +137,7 @@ public class UserInterface implements Observer{
 		btnRun.setBounds(476, 283, 97, 25);
 		frame.getContentPane().add(btnRun);
 		
-		JButton btnChooseDataFile = new JButton("Choose data file");
+		JButton btnChooseDataFile = new JButton("Select data file");
 		btnChooseDataFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fileFind = new JFileChooser();
@@ -158,7 +158,7 @@ public class UserInterface implements Observer{
 		frame.getContentPane().add(dataFileField);
 		dataFileField.setColumns(10);
 		
-		JButton btnChooseAttributeName = new JButton("Choose attribute name file");
+		JButton btnChooseAttributeName = new JButton("Select file with attribute names");
 		btnChooseAttributeName.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fileFind = new JFileChooser();
@@ -204,15 +204,15 @@ public class UserInterface implements Observer{
 		decisionAttributeComboBox.setBounds(0, 94, 153, 22);
 		frame.getContentPane().add(decisionAttributeComboBox);
 		
-		JLabel lblChooseDecisionAttribute = new JLabel("Choose decision attribute: ");
+		JLabel lblChooseDecisionAttribute = new JLabel("Select decision attribute: ");
 		lblChooseDecisionAttribute.setBounds(0, 79, 153, 16);
 		frame.getContentPane().add(lblChooseDecisionAttribute);
 		
-		JLabel lblInitialValue = new JLabel("Initial Value:");
+		JLabel lblInitialValue = new JLabel("Initial-Value:");
 		lblInitialValue.setBounds(235, 79, 72, 16);
 		frame.getContentPane().add(lblInitialValue);
 		
-		JLabel lblEndValue = new JLabel("End Value:");
+		JLabel lblEndValue = new JLabel("End-Value:");
 		lblEndValue.setBounds(420, 79, 62, 16);
 		frame.getContentPane().add(lblEndValue);
 		
@@ -224,7 +224,7 @@ public class UserInterface implements Observer{
 		dToValueComboBox.setBounds(420, 94, 88, 22);
 		frame.getContentPane().add(dToValueComboBox);
 		
-		JLabel lblStableAttributes = new JLabel("Stable attributes:");
+		JLabel lblStableAttributes = new JLabel("Stable-attributes:");
 		lblStableAttributes.setBounds(0, 148, 99, 16);
 		frame.getContentPane().add(lblStableAttributes);
 		
@@ -235,11 +235,11 @@ public class UserInterface implements Observer{
 		stableAttributesList = new JList<String>();
 		scrollPane_1.setViewportView(stableAttributesList);
 		
-		JLabel lblMinimumSupport = new JLabel("Minimum Support:");
+		JLabel lblMinimumSupport = new JLabel("Minimum-Support:");
 		lblMinimumSupport.setBounds(195, 148, 128, 16);
 		frame.getContentPane().add(lblMinimumSupport);
 		
-		JLabel lblMinimumConfidence = new JLabel("Minimum Confidence:");
+		JLabel lblMinimumConfidence = new JLabel("Minimum-Confidence:");
 		lblMinimumConfidence.setBounds(195, 205, 128, 16);
 		frame.getContentPane().add(lblMinimumConfidence);
 		
@@ -254,7 +254,7 @@ public class UserInterface implements Observer{
 		minConfidenceTextField.setBounds(335, 202, 44, 22);
 		frame.getContentPane().add(minConfidenceTextField);
 		
-		JButton btnLoadFiles = new JButton("Load files...");
+		JButton btnLoadFiles = new JButton("Upload files...");
 		btnLoadFiles.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(!(dataFile == null) && !(headerFile == null)){
