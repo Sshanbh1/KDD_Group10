@@ -27,32 +27,43 @@ import javax.swing.SwingConstants;
 import java.awt.SystemColor;
 
 public class UserInterface implements Observer{
-
-	private JFrame frmKddProjectGroup;
+        
+        /**
+	 * Initialization
+	 */
+    
+	private JFrame lersFramedUI;
 	private JTextArea textArea;
-	private File dataFile;
+        private JTextField dataField;
+	private JTextField headerField;
+	private JTextField minimumSupportField;
+	private JTextField minimumConfidenceField;
+        
+        private JComboBox<String> decisionAttributeField;
+	private JComboBox<String> dicisionToValue;
+	private JComboBox<String> dicisionInitialValue;
+        
+	private File data;
 	private File headerFile;
-	private JTextField dataFileField;
-	private JTextField headerFileField;
-	private JTextField minSupportTextField;
-	private JTextField minConfidenceTextField;
+	
+        private JList<String> stableAttributes;
 	private Logic actionFinder;
-	private JList<String> stableAttributesList;
-	private JComboBox<String> decisionAttributeComboBox;
-	private JComboBox<String> dToValueComboBox;
-	private JComboBox<String> dInitialValueComboBox;
+	
+	
 	private static final String SEPARATOR = System.getProperty("line.separator");
 
 	
-	/**
-	 * Launch the application.
-	 */
+	/*
+        
+        Main Function : Staing the Program
+        
+        */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					UserInterface window = new UserInterface();
-					window.frmKddProjectGroup.setVisible(true);
+					window.lersFramedUI.setVisible(true);
 					
 					UIManager.setLookAndFeel(
 				            UIManager.getSystemLookAndFeelClassName());
@@ -67,30 +78,27 @@ public class UserInterface implements Observer{
 	}
 	
 	/**
-	 * Create the application.
+	 * Populate the User Interface
 	 */
 	public UserInterface() {
 		initialize();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	private void initialize() {
 		actionFinder = new Logic();
 		actionFinder.addObserver(this);
 		
-		frmKddProjectGroup = new JFrame();
-		frmKddProjectGroup.setResizable(false);
-		frmKddProjectGroup.setTitle("KDD Project- Group 10");
-		frmKddProjectGroup.getContentPane().setBackground(new Color(105, 105, 105));
-		frmKddProjectGroup.setBounds(100, 100, 603, 585);
-		frmKddProjectGroup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmKddProjectGroup.getContentPane().setLayout(null);
+		lersFramedUI = new JFrame();
+		lersFramedUI.setResizable(false);
+		lersFramedUI.setTitle("KDD Project- Group 10");
+		lersFramedUI.getContentPane().setBackground(new Color(105, 105, 105));
+		lersFramedUI.setBounds(100, 100, 603, 585);
+		lersFramedUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		lersFramedUI.getContentPane().setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(0, 321, 585, 217);
-		frmKddProjectGroup.getContentPane().add(scrollPane);
+		lersFramedUI.getContentPane().add(scrollPane);
 		
 		textArea = new JTextArea();
 		textArea.setLineWrap(true);
@@ -100,7 +108,7 @@ public class UserInterface implements Observer{
 		JPanel panel = new JPanel();
 		panel.setBackground(UIManager.getColor("Button.background"));
 		panel.setBounds(10, 203, 563, 107);
-		frmKddProjectGroup.getContentPane().add(panel);
+		lersFramedUI.getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		JLabel lblMinimumSupport = new JLabel("Min Support:");
@@ -108,20 +116,20 @@ public class UserInterface implements Observer{
 		lblMinimumSupport.setHorizontalAlignment(SwingConstants.LEFT);
 		panel.add(lblMinimumSupport);
 		
-		minConfidenceTextField = new JTextField();
-		minConfidenceTextField.setBounds(108, 11, 96, 20);
-		panel.add(minConfidenceTextField);
-		minConfidenceTextField.setToolTipText("Enter as a percentage value");
-		minConfidenceTextField.setColumns(10);
+		minimumConfidenceField = new JTextField();
+		minimumConfidenceField.setBounds(108, 11, 96, 20);
+		panel.add(minimumConfidenceField);
+		minimumConfidenceField.setToolTipText("Enter as a percentage value");
+		minimumConfidenceField.setColumns(10);
 		
 		JLabel lblMinimumConfidence = new JLabel("Min Confidence:");
 		lblMinimumConfidence.setBounds(10, 49, 88, 14);
 		panel.add(lblMinimumConfidence);
 		
-		minSupportTextField = new JTextField();
-		minSupportTextField.setBounds(108, 46, 96, 20);
-		panel.add(minSupportTextField);
-		minSupportTextField.setColumns(10);
+		minimumSupportField = new JTextField();
+		minimumSupportField.setBounds(108, 46, 96, 20);
+		panel.add(minimumSupportField);
+		minimumSupportField.setColumns(10);
 		
 		JButton btnRun = new JButton("Run");
 		btnRun.setBounds(465, 71, 88, 25);
@@ -131,9 +139,9 @@ public class UserInterface implements Observer{
 		scrollPane_1.setBounds(310, 11, 127, 85);
 		panel.add(scrollPane_1);
 		
-		stableAttributesList = new JList<String>();
-		stableAttributesList.setVisibleRowCount(10);
-		scrollPane_1.setViewportView(stableAttributesList);
+		stableAttributes = new JList<String>();
+		stableAttributes.setVisibleRowCount(10);
+		scrollPane_1.setViewportView(stableAttributes);
 		
 		JLabel lblStableAttributes = new JLabel("Stable attributes:");
 		lblStableAttributes.setHorizontalAlignment(SwingConstants.CENTER);
@@ -145,18 +153,18 @@ public class UserInterface implements Observer{
 				textArea.append("Verifying Input...\n");
 				
 				HashSet<String> stable = new HashSet<String>();
-				stable.addAll(stableAttributesList.getSelectedValuesList());		
+				stable.addAll(stableAttributes.getSelectedValuesList());		
 				actionFinder.setStableFlexible(stable);
 				
-				if(stable.contains((String)decisionAttributeComboBox.getSelectedItem())){
+				if(stable.contains((String)decisionAttributeField.getSelectedItem())){
 					JOptionPane.showMessageDialog(null, "Decision attribute cannot be stable.", 
 							"Decision attribute error", JOptionPane.ERROR_MESSAGE);
 					correctInput = false;
 				}
 				
 				try {
-					if(Integer.parseInt(minSupportTextField.getText()) <= 0 || 
-							Integer.parseInt(minConfidenceTextField.getText()) < 0) {
+					if(Integer.parseInt(minimumSupportField.getText()) <= 0 || 
+							Integer.parseInt(minimumConfidenceField.getText()) < 0) {
 						correctInput = false;
 						JOptionPane.showMessageDialog(null, "Support and confidence values must be greater than 0", 
 								"Value error", JOptionPane.ERROR_MESSAGE);
@@ -172,13 +180,13 @@ public class UserInterface implements Observer{
 				}
 					
 				if(correctInput) {
-					actionFinder.setMinSupportConfidence(Integer.parseInt(minSupportTextField.getText()),
-							Integer.parseInt(minConfidenceTextField.getText()));
+					actionFinder.setMinSupportConfidence(Integer.parseInt(minimumSupportField.getText()),
+							Integer.parseInt(minimumConfidenceField.getText()));
 					
-					String decisionName = (String)decisionAttributeComboBox.getSelectedItem();
+					String decisionName = (String)decisionAttributeField.getSelectedItem();
 					
-					actionFinder.setDecisionAttributes(decisionName + ((String)dInitialValueComboBox.getSelectedItem()),
-							decisionName + (String)dToValueComboBox.getSelectedItem());
+					actionFinder.setDecisionAttributes(decisionName + ((String)dicisionInitialValue.getSelectedItem()),
+							decisionName + (String)dicisionToValue.getSelectedItem());
 					
 					(new Thread(actionFinder)).start();
 				}				
@@ -187,7 +195,7 @@ public class UserInterface implements Observer{
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBounds(10, 130, 563, 62);
-		frmKddProjectGroup.getContentPane().add(panel_1);
+		lersFramedUI.getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 		
 		JLabel lblChooseDecisionAttribute = new JLabel("Choose decision attribute: ");
@@ -195,47 +203,47 @@ public class UserInterface implements Observer{
 		lblChooseDecisionAttribute.setHorizontalAlignment(SwingConstants.LEFT);
 		panel_1.add(lblChooseDecisionAttribute);
 		
-		decisionAttributeComboBox = new JComboBox<String>();
-		decisionAttributeComboBox.setBackground(Color.WHITE);
-		decisionAttributeComboBox.setBounds(10, 26, 153, 22);
-		panel_1.add(decisionAttributeComboBox);
+		decisionAttributeField = new JComboBox<String>();
+		decisionAttributeField.setBackground(Color.WHITE);
+		decisionAttributeField.setBounds(10, 26, 153, 22);
+		panel_1.add(decisionAttributeField);
 		
 		JLabel lblInitialValue = new JLabel("Initial Value:");
 		lblInitialValue.setBounds(173, 11, 88, 16);
 		panel_1.add(lblInitialValue);
 		
-		dInitialValueComboBox = new JComboBox<String>();
-		dInitialValueComboBox.setBackground(Color.WHITE);
-		dInitialValueComboBox.setBounds(173, 26, 88, 22);
-		panel_1.add(dInitialValueComboBox);
+		dicisionInitialValue = new JComboBox<String>();
+		dicisionInitialValue.setBackground(Color.WHITE);
+		dicisionInitialValue.setBounds(173, 26, 88, 22);
+		panel_1.add(dicisionInitialValue);
 		
 		JLabel lblEndValue = new JLabel("End Value:");
 		lblEndValue.setBounds(271, 11, 109, 16);
 		panel_1.add(lblEndValue);
 		
-		dToValueComboBox = new JComboBox<String>();
-		dToValueComboBox.setBackground(Color.WHITE);
-		dToValueComboBox.setBounds(271, 26, 109, 22);
-		panel_1.add(dToValueComboBox);
+		dicisionToValue = new JComboBox<String>();
+		dicisionToValue.setBackground(Color.WHITE);
+		dicisionToValue.setBounds(271, 26, 109, 22);
+		panel_1.add(dicisionToValue);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBounds(10, 11, 563, 108);
-		frmKddProjectGroup.getContentPane().add(panel_2);
+		lersFramedUI.getContentPane().add(panel_2);
 		panel_2.setLayout(null);
 		
-		dataFileField = new JTextField();
-		dataFileField.setBounds(10, 11, 348, 22);
-		panel_2.add(dataFileField);
-		dataFileField.setBackground(Color.WHITE);
-		dataFileField.setEditable(false);
-		dataFileField.setColumns(10);
+		dataField = new JTextField();
+		dataField.setBounds(10, 11, 348, 22);
+		panel_2.add(dataField);
+		dataField.setBackground(Color.WHITE);
+		dataField.setEditable(false);
+		dataField.setColumns(10);
 		
-		headerFileField = new JTextField();
-		headerFileField.setBounds(10, 40, 348, 22);
-		panel_2.add(headerFileField);
-		headerFileField.setBackground(Color.WHITE);
-		headerFileField.setEditable(false);
-		headerFileField.setColumns(10);
+		headerField = new JTextField();
+		headerField.setBounds(10, 40, 348, 22);
+		panel_2.add(headerField);
+		headerField.setBackground(Color.WHITE);
+		headerField.setEditable(false);
+		headerField.setColumns(10);
 		
 		JButton btnChooseDataFile = new JButton("Choose data file");
 		btnChooseDataFile.setBounds(368, 10, 185, 25);
@@ -250,10 +258,10 @@ public class UserInterface implements Observer{
 		panel_2.add(btnLoadFiles);
 		btnLoadFiles.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(!(dataFile == null) && !(headerFile == null)){
-					if(dataFile.isFile() && headerFile.isFile()){
+				if(!(data == null) && !(headerFile == null)){
+					if(data.isFile() && headerFile.isFile()){
 						textArea.append("Reading files..." + SEPARATOR);
-						actionFinder.readFile(headerFile, dataFile);
+						actionFinder.readFile(headerFile, data);
 						textArea.append("Files read" + SEPARATOR);
 						
 						//set decision attribute choices
@@ -277,9 +285,9 @@ public class UserInterface implements Observer{
 
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					headerFile = fileFind.getSelectedFile();
-					headerFileField.setText(headerFile.getPath());
+					headerField.setText(headerFile.getPath());
 				}
-				headerFileField.setText(headerFile.getPath());
+				headerField.setText(headerFile.getPath());
 			}
 		});
 		btnChooseDataFile.addActionListener(new ActionListener() {
@@ -288,54 +296,54 @@ public class UserInterface implements Observer{
 				int returnVal = fileFind.showOpenDialog(null);
 
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					dataFile = fileFind.getSelectedFile();
-					dataFileField.setText(dataFile.getPath());
+					data = fileFind.getSelectedFile();
+					dataField.setText(data.getPath());
 				}	
 			}
 		});
-		decisionAttributeComboBox.addItemListener(new ItemListener() {
+		decisionAttributeField.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
 				if(arg0.getStateChange() == ItemEvent.SELECTED) {
-					dInitialValueComboBox.removeAllItems();
-					dToValueComboBox.removeAllItems();
+					dicisionInitialValue.removeAllItems();
+					dicisionToValue.removeAllItems();
 					
 					HashSet<String> distinctValues = actionFinder.getDistinctAttributeValues((String)arg0.getItem());
 					
 					for(String value : distinctValues) {
-						dInitialValueComboBox.addItem(value);
-						dToValueComboBox.addItem(value);
+						dicisionInitialValue.addItem(value);
+						dicisionToValue.addItem(value);
 					}
-					dInitialValueComboBox.setEnabled(true);
-					dToValueComboBox.setEnabled(true);
+					dicisionInitialValue.setEnabled(true);
+					dicisionToValue.setEnabled(true);
 				}else {
-					dInitialValueComboBox.setEnabled(false);
-					dToValueComboBox.setEnabled(false);
+					dicisionInitialValue.setEnabled(false);
+					dicisionToValue.setEnabled(false);
 				}
 			}
 		});
-		frmKddProjectGroup.setVisible(true);
+		lersFramedUI.setVisible(true);
 	}
 
 	/**
-	 * Initialize all potential stable attributes in the list
+	 * Initializing all the available stable attributes
 	 */
 	protected void initStableAttributes() {
 		String[] attributeNames = (actionFinder.getAttributeNames().toArray(new String[0]));
 
-		stableAttributesList.setListData(attributeNames);
+		stableAttributes.setListData(attributeNames);
 		
 	}
 
 	/**
-	 * Initializes all of the potential decision attribute values
+	 * Initializing all the available decision attributes
 	 */
 	protected void initDecisionAttributes() {
 		List<String> attributeNames = actionFinder.getAttributeNames();
 		
-		decisionAttributeComboBox.removeAllItems();
+		decisionAttributeField.removeAllItems();
 		
 		for(String name : attributeNames) {
-			decisionAttributeComboBox.addItem(name);
+			decisionAttributeField.addItem(name);
 		}	
 	}
 
